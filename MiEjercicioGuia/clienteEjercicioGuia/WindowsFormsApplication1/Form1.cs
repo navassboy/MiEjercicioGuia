@@ -22,29 +22,30 @@ namespace WindowsFormsApplication1
         private void Form1_Load(object sender, EventArgs e)
         {
 
-           
+
         }
 
-   
-        
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e)
         {
-            try
+            if (radioButton3.Checked) // Solo ejecuta el código si está marcado
             {
-                // Enviar solicitud de verificación de palíndromo
-                string mensaje = "4/" + nombre.Text;
-                byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
-                server.Send(msg);
+                try
+                {
+                    // Enviar solicitud de verificación de palíndromo
+                    string mensaje = "4/" + nombre.Text;
+                    byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
+                    server.Send(msg);
 
-                byte[] msg2 = new byte[80];
-                server.Receive(msg2);
-                mensaje = Encoding.ASCII.GetString(msg2).Split('\0')[0];
-                MessageBox.Show(mensaje);
-            }
-            catch (SocketException)
-            {
-                MessageBox.Show("No he podido enviar la petición al servidor.");
+                    byte[] msg2 = new byte[80];
+                    server.Receive(msg2);
+                    mensaje = Encoding.ASCII.GetString(msg2).Split('\0')[0];
+                    MessageBox.Show(mensaje);
+                }
+                catch (SocketException)
+                {
+                    MessageBox.Show("No he podido enviar la petición al servidor.");
+                }
             }
         }
 
@@ -54,7 +55,7 @@ namespace WindowsFormsApplication1
             {
                 // IP del servidor y puerto
                 IPAddress direc = IPAddress.Parse("192.168.56.101");
-                IPEndPoint ipep = new IPEndPoint(direc, 9060);
+                IPEndPoint ipep = new IPEndPoint(direc, 9070);
 
                 // Crear el socket
                 server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -87,28 +88,33 @@ namespace WindowsFormsApplication1
 
         private void radioButton4_CheckedChanged(object sender, EventArgs e)
         {
-            try
+            if (radioButton4.Checked) // Solo ejecuta el código si está marcado
             {
-                // Enviar solicitud para convertir el nombre a mayúsculas
-                string mensaje = "5/" + nombre.Text;
-                byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
-                server.Send(msg);
+                try
+                {
+                    // Enviar solicitud para convertir el nombre a mayúsculas
+                    string mensaje = "5/" + nombre.Text;
+                    byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
+                    server.Send(msg);
 
-                byte[] msg2 = new byte[80];
-                server.Receive(msg2);
-                mensaje = Encoding.ASCII.GetString(msg2).Split('\0')[0];
-                MessageBox.Show(mensaje);
-            }
-            catch (SocketException)
-            {
-                MessageBox.Show("No he podido enviar la petición al servidor.");
+                    byte[] msg2 = new byte[80];
+                    server.Receive(msg2);
+                    mensaje = Encoding.ASCII.GetString(msg2).Split('\0')[0];
+                    MessageBox.Show(mensaje);
+                }
+                catch (SocketException)
+                {
+                    MessageBox.Show("No he podido enviar la petición al servidor.");
+                }
             }
         }
 
         private void Bonito_CheckedChanged(object sender, EventArgs e)
         {
-            try
+            if (Bonito.Checked) // Solo ejecuta el código si está marcado
             {
+                try
+                {
                     // Solicitar si el nombre es bonito
                     string mensaje = "2/" + nombre.Text;
                     byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
@@ -122,11 +128,12 @@ namespace WindowsFormsApplication1
                         MessageBox.Show("Tu nombre ES bonito.");
                     else
                         MessageBox.Show("Tu nombre NO es bonito. Lo siento.");
-                
-            }
-            catch (SocketException)
-            {
-                MessageBox.Show("No he podido enviar la petición al servidor.");
+
+                }
+                catch (SocketException)
+                {
+                    MessageBox.Show("No he podido enviar la petición al servidor.");
+                }
             }
 
 
@@ -134,9 +141,11 @@ namespace WindowsFormsApplication1
 
         private void Longitud_CheckedChanged(object sender, EventArgs e)
         {
-            try
+            if (Longitud.Checked) // Solo ejecuta el código si está marcado
             {
-                               
+                try
+                {
+
                     // Solicitar la longitud del nombre
                     string mensaje = "1/" + nombre.Text;
                     byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
@@ -146,14 +155,51 @@ namespace WindowsFormsApplication1
                     server.Receive(msg2);
                     mensaje = Encoding.ASCII.GetString(msg2).Split('\0')[0];
                     MessageBox.Show("La longitud de tu nombre es: " + mensaje);
-               
+
+                }
+                catch (SocketException)
+                {
+                    MessageBox.Show("No he podido enviar la petición al servidor.");
+                }
             }
-            catch (SocketException)
+
+        }
+
+       
+
+        private void buttonAltura_CheckedChanged_1(object sender, EventArgs e)
+        {
+            if (buttonAltura.Checked) // Solo ejecuta el código si está marcado
             {
-                MessageBox.Show("No he podido enviar la petición al servidor.");
+                try
+                {
+                    // Verificar si es alto o bajo
+                    string nombreInput = nombre.Text;
+                    string alturaInput = altura.Text;  // Asumiendo que hay un TextBox llamado "altura" donde se ingresa la altura
+
+                    // Verificar si se ha ingresado una altura válida
+                    if (string.IsNullOrEmpty(alturaInput) || !float.TryParse(alturaInput, out float alturaParsed))
+                    {
+                        MessageBox.Show("Por favor ingresa una altura válida.");
+                        return;
+                    }
+
+                    // Formar la solicitud
+                    string mensaje = "3/" + nombreInput + "/" + alturaParsed.ToString();
+                    byte[] msg = Encoding.ASCII.GetBytes(mensaje);
+                    server.Send(msg);
+
+                    // Recibir la respuesta del servidor
+                    byte[] msg2 = new byte[80];
+                    server.Receive(msg2);
+                    mensaje = Encoding.ASCII.GetString(msg2).Split('\0')[0];
+                    MessageBox.Show(mensaje);
+                }
+                catch (SocketException)
+                {
+                    MessageBox.Show("No he podido enviar la petición al servidor.");
+                }
             }
-
-
         }
     }
 }
